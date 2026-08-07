@@ -98,32 +98,31 @@ button{ font-family: inherit; }
 
 /* ---------- Botanical corner ornaments (reusable) ---------- */
 .ornament-frame{ position:relative; }
-.corner{ position:absolute; width:52px; height:52px; color: var(--gold); opacity:.75; pointer-events:none; }
+.corner{ position:absolute; width:46px; height:46px; color: var(--gold); opacity:.8; pointer-events:none; z-index:2; }
 .corner svg{ width:100%; height:100%; }
-.corner.tl{ top:10px; left:10px; }
-.corner.tr{ top:10px; right:10px; transform: scaleX(-1); }
-.corner.bl{ bottom:10px; left:10px; transform: scaleY(-1); }
-.corner.br{ bottom:10px; right:10px; transform: scale(-1,-1); }
+.corner.tl{ top:6px; left:6px; }
+.corner.tr{ top:6px; right:6px; transform: scaleX(-1); }
+.corner.bl{ bottom:6px; left:6px; transform: scaleY(-1); }
+.corner.br{ bottom:6px; right:6px; transform: scale(-1,-1); }
+@media(max-width:480px){ .corner{ width:34px; height:34px; } }
 
 /* ============================================================
-   AMBIENT PETALS / LEAVES (background motion)
+   VIDEO BUNGA (pojok atas, transparan, loop)
    ============================================================ */
-#petal-layer{
-  position: fixed; inset:0; width:100%; height:100%;
-  pointer-events:none; z-index: 5; overflow:hidden;
+#flower-video-wrap{
+  position: fixed; top: -18px; right: -18px; z-index: 6;
+  width: 260px; max-width: 46vw; pointer-events: none;
 }
-.petal{
-  position:absolute; top:-8%; opacity:.75; will-change: transform;
-  animation-name: petal-fall; animation-timing-function: linear; animation-iteration-count: infinite;
+#flower-video{
+  width: 100%; height: auto; display: block;
+  /* Video mp4 tidak mendukung alpha channel asli di browser.
+     mix-blend-mode 'screen' membuat area HITAM pada video menjadi transparan
+     terhadap latar terang di belakangnya, sehingga hanya bunganya yang tampak.
+     Jika latar video kamu justru PUTIH (bukan hitam), ganti 'screen' menjadi 'multiply'. */
+  mix-blend-mode: screen;
 }
-@keyframes petal-fall{
-  0%   { transform: translateY(0) translateX(0) rotate(0deg); }
-  50%  { transform: translateY(55vh) translateX(20px) rotate(160deg); }
-  100% { transform: translateY(112vh) translateX(-14px) rotate(320deg); }
-}
-@media (prefers-reduced-motion: reduce){
-  .petal{ animation: none; opacity:.25; }
-  *{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
+@media(max-width:640px){
+  #flower-video-wrap{ width: 170px; top:-10px; right:-10px; }
 }
 
 /* ============================================================
@@ -141,40 +140,41 @@ button{ font-family: inherit; }
 #cover.opened{ transform: translateY(-100vh); pointer-events:none; }
 
 .envelope-flap{
-  position:absolute; top:0; left:0; width:100%; height:42%;
+  position:absolute; top:0; left:0; width:100%; height:22%;
   background: linear-gradient(to bottom, var(--paper-deep), var(--paper));
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   border-bottom: 1px solid rgba(173,138,77,.5);
   z-index: 3; transform-origin: top;
   transition: transform 1.1s cubic-bezier(.83,0,.17,1), opacity 1.1s ease;
-  display:flex; align-items:flex-end; justify-content:center; padding-bottom: 14px;
+  display:flex; align-items:flex-end; justify-content:center; padding-bottom: 10px;
 }
 .envelope-flap span{
-  font-family: var(--font-display); font-size:.62rem; letter-spacing:.35em;
+  font-family: var(--font-display); font-size:.6rem; letter-spacing:.35em;
   color: var(--gold); text-transform: uppercase; opacity:.7;
 }
 #cover.opened .envelope-flap{ transform: rotateX(180deg); opacity:0; }
 
 .seal{
-  position:absolute; top:38%; left:50%; transform: translate(-50%,-50%);
-  z-index:4; width:78px; height:78px; border-radius:50%;
+  position:absolute; top:22%; left:50%; transform: translate(-50%,-50%);
+  z-index:4; width:60px; height:60px; border-radius:50%;
   background: radial-gradient(circle at 35% 30%, #8c4550, var(--wine) 70%);
   box-shadow: 0 6px 18px rgba(60,20,25,.4), inset 0 0 0 2px rgba(255,255,255,.15);
   display:flex; align-items:center; justify-content:center;
   transition: transform .8s cubic-bezier(.5,-0.3,.2,1.4), opacity .6s ease;
 }
-.seal svg{ width:34px; height:34px; color:#f2e2c8; }
+.seal svg{ width:26px; height:26px; color:#f2e2c8; }
 #cover.opened .seal{ transform: translate(-50%,-50%) scale(0) rotate(35deg); opacity:0; }
 
 #cover-content{
   position:relative; z-index:2; height:100%; width:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding: 64px 20px 32px;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding: clamp(96px, 28vh, 210px) 20px 32px;
   text-align:center;
+  overflow-y:auto;
 }
 .cover-photo{
   width: 148px; height: 196px; border-radius: 999px 999px 12px 12px;
-  overflow:hidden; margin: 18px 0 22px;
+  overflow:hidden; margin: 6px 0 22px;
   border: 1px solid var(--gold-light);
   box-shadow: 0 14px 30px rgba(59,46,34,.22);
   position:relative;
@@ -184,6 +184,8 @@ button{ font-family: inherit; }
   content:''; position:absolute; inset:0;
   background: linear-gradient(to top, rgba(59,46,34,.35), transparent 45%);
 }
+.photo-frame{ position:relative; margin: 6px 0 22px; }
+.photo-frame .cover-photo{ margin: 0; }
 .cover-names{
   font-family: var(--font-script); color: var(--wine);
   font-size: clamp(2.6rem, 11vw, 4.2rem); line-height:1.05;
@@ -393,8 +395,11 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 </head>
 <body class="locked">
 
-<canvas id="bg-canvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
-<div id="petal-layer"></div>
+<div id="flower-video-wrap">
+  <video id="flower-video" autoplay muted loop playsinline aria-hidden="true">
+    <source src="bunga1.mp4" type="video/mp4">
+  </video>
+</div>
 
 <audio id="bg-music" loop preload="auto">
   <source src="lagu.mp3" type="audio/mpeg">
@@ -412,11 +417,13 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
   </div>
   <div id="cover-content">
     <p class="eyebrow">The Wedding Of</p>
-    <div class="cover-photo">
-      <img src="gambar1.jpeg" alt="Foto Hikmah & Sandy">
+    <div class="photo-frame">
+      <div class="cover-photo">
+        <img src="gambar1.jpeg" alt="Foto Hikmah & Sandy">
+      </div>
     </div>
     <h1 class="cover-names" id="cover-couple-names">Hikmah &amp; Sandy</h1>
-    <div class="divider" style="margin:10px auto 14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3v18M6 8c0 3 3 4 6 4s6 1 6 4M6 20c0-3 3-4 6-4"/></svg></div>
+    <div class="divider" style="margin:10px auto 14px;"><svg viewBox="0 0 24 24"><path d="M12 12C12 6 8 4 5 6c3 1 5 3 7 6Z" fill="#C98DA0"/><path d="M12 12C16 9 16 4 13 3c-1 4-1 7-1 9Z" fill="#D9A6B7"/><path d="M12 12C18 13 21 10 20 6c-4 1-7 4-8 6Z" fill="#B7677A"/><path d="M12 12C14 18 19 18 20 15c-4 0-6-1-8-3Z" fill="#C98DA0"/><path d="M12 12C8 17 4 16 4 13c4 1 6 0 8-1Z" fill="#D9A6B7"/><circle cx="12" cy="12" r="2" fill="#E8C77E"/></svg></div>
     <p class="cover-date" id="cover-date">16 Agustus 2026</p>
 
     <div class="guest-box">
@@ -444,7 +451,11 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 
   <!-- Couple -->
   <section class="couple reveal">
-    <div class="container">
+    <div class="container ornament-frame">
+      <div class="corner tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner tr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner br"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
       <div class="couple-person">
         <h3 class="script" id="bride-fullname">Hikmah Tulmaula</h3>
         <p class="nick" id="bride-nick">( Hikmah )</p>
@@ -473,9 +484,11 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 
   <!-- Event & Countdown -->
   <section class="event-wrap reveal">
-    <div class="container">
+    <div class="container ornament-frame">
+      <div class="corner tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner tr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
       <h2 class="section-title">Waktu &amp; Tempat</h2>
-      <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 3"/></svg></div>
+      <div class="divider"><svg viewBox="0 0 24 24"><path d="M12 12C12 6 8 4 5 6c3 1 5 3 7 6Z" fill="#C98DA0"/><path d="M12 12C16 9 16 4 13 3c-1 4-1 7-1 9Z" fill="#D9A6B7"/><path d="M12 12C18 13 21 10 20 6c-4 1-7 4-8 6Z" fill="#B7677A"/><path d="M12 12C14 18 19 18 20 15c-4 0-6-1-8-3Z" fill="#C98DA0"/><path d="M12 12C8 17 4 16 4 13c4 1 6 0 8-1Z" fill="#D9A6B7"/><circle cx="12" cy="12" r="2" fill="#E8C77E"/></svg></div>
 
       <div id="countdown">
         <div class="cd-box"><span class="num" id="cd-days">00</span><span class="lbl">Hari</span></div>
@@ -520,7 +533,7 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
   <section class="guests reveal">
     <div class="container">
       <h2 class="section-title">Turut Mengundang</h2>
-      <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 20c4-8 12-8 16 0M8 12a4 4 0 1 1 8 0"/></svg></div>
+      <div class="divider"><svg viewBox="0 0 24 24"><path d="M12 12C12 6 8 4 5 6c3 1 5 3 7 6Z" fill="#C98DA0"/><path d="M12 12C16 9 16 4 13 3c-1 4-1 7-1 9Z" fill="#D9A6B7"/><path d="M12 12C18 13 21 10 20 6c-4 1-7 4-8 6Z" fill="#B7677A"/><path d="M12 12C14 18 19 18 20 15c-4 0-6-1-8-3Z" fill="#C98DA0"/><path d="M12 12C8 17 4 16 4 13c4 1 6 0 8-1Z" fill="#D9A6B7"/><circle cx="12" cy="12" r="2" fill="#E8C77E"/></svg></div>
       <p style="color:var(--ink-soft); font-size:.95rem;">Segenap keluarga besar dari kedua belah pihak</p>
 
       <div class="guests-grid">
@@ -538,14 +551,18 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 
   <!-- Closing -->
   <section class="closing reveal">
-    <div class="container">
+    <div class="container ornament-frame">
+      <div class="corner tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner tr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
+      <div class="corner br"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 2c6 0 10 2 12 6M2 2c0 6 2 10 6 12M4 3c3 3 4 6 4 9M3 4c3 3 6 4 9 4"/><circle cx="16" cy="8" r="1.6"/></svg></div>
       <p class="ayat">"Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang."
         <span class="ref">( QS. Ar-Rum : 21 )</span>
       </p>
       <p class="thanks">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.<br><br>Wassalamu'alaikum Warahmatullahi Wabarakatuh.</p>
       <p class="from">Kami yang berbahagia</p>
       <h2 class="final-names">Hikmah &amp; Sandy</h2>
-      <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3c-2 3-5 4-5 7a5 5 0 0 0 10 0c0-3-3-4-5-7Z"/></svg></div>
+      <div class="divider"><svg viewBox="0 0 24 24"><path d="M12 12C12 6 8 4 5 6c3 1 5 3 7 6Z" fill="#C98DA0"/><path d="M12 12C16 9 16 4 13 3c-1 4-1 7-1 9Z" fill="#D9A6B7"/><path d="M12 12C18 13 21 10 20 6c-4 1-7 4-8 6Z" fill="#B7677A"/><path d="M12 12C14 18 19 18 20 15c-4 0-6-1-8-3Z" fill="#C98DA0"/><path d="M12 12C8 17 4 16 4 13c4 1 6 0 8-1Z" fill="#D9A6B7"/><circle cx="12" cy="12" r="2" fill="#E8C77E"/></svg></div>
     </div>
   </section>
 
@@ -774,36 +791,6 @@ const DATA_UNDANGAN = {
       });
     }, { threshold: .12 });
     items.forEach(function(el){ obs.observe(el); });
-  })();
-
-  /* ---------- Ambient petals (bunga & dedaunan) ---------- */
-  (function petals(){
-    var layer = document.getElementById('petal-layer');
-    var isMobile = window.innerWidth < 768;
-    var count = reduceMotion ? 0 : (isMobile ? 9 : 18);
-
-    var flower = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 3c-2 3-5 4-5 7a5 5 0 0 0 10 0c0-3-3-4-5-7Z"/><circle cx="12" cy="14" r="1.4" fill="currentColor" stroke="none"/></svg>';
-    var leaf = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 20c8-1 14-7 15-16-9 1-15 7-15 16Z"/><path d="M6 18c4-4 7-7 12-13"/></svg>';
-
-    var colors = ['#AD8A4D', '#6E7B54', '#7C3B42'];
-
-    for(var i=0; i<count; i++){
-      var el = document.createElement('div');
-      el.className = 'petal';
-      var size = 14 + Math.random()*14;
-      var left = Math.random()*100;
-      var duration = 14 + Math.random()*14;
-      var delay = Math.random()*-24;
-      var color = colors[i % colors.length];
-      el.style.left = left + 'vw';
-      el.style.width = size + 'px';
-      el.style.height = size + 'px';
-      el.style.color = color;
-      el.style.animationDuration = duration + 's';
-      el.style.animationDelay = delay + 's';
-      el.innerHTML = (i % 2 === 0) ? flower : leaf;
-      layer.appendChild(el);
-    }
   })();
 
 })();
