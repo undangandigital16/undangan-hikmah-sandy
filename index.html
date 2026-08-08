@@ -49,6 +49,33 @@
 
   --container: 640px;
   --radius: 22px;
+
+  /* ============================================================
+     KONFIGURASI UKURAN BUNGA — edit angka ini saja.
+     Tinggal upload file video, ukuran tinggal atur di sini.
+     Boleh dibesarkan sesuka hati — layout sudah otomatis
+     menyisakan ruang supaya tidak menutupi tulisan.
+     ============================================================ */
+  --flower-tr-size: 300px;  /* pojok kanan atas (dipakai di semua halaman) */
+  --flower-br-size: 260px;  /* pojok kanan bawah */
+  --flower-tl-size: 260px;  /* pojok kiri atas */
+  --flower-bl-size: 240px;  /* pojok kiri bawah */
+
+  --cover-top-size: 130px;    /* tinggi jejeran bunga di cover ATAS */
+  --cover-bottom-size: 120px; /* tinggi jejeran bunga di cover BAWAH */
+}
+
+/* ukuran otomatis lebih kecil di layar HP — boleh diubah juga */
+@media(max-width:640px){
+  :root{
+    --flower-tr-size: 190px;
+    --flower-br-size: 160px;
+    --flower-tl-size: 160px;
+    --flower-bl-size: 150px;
+
+    --cover-top-size: 90px;
+    --cover-bottom-size: 80px;
+  }
 }
 
 *{ box-sizing: border-box; }
@@ -107,23 +134,49 @@ button{ font-family: inherit; }
 @media(max-width:480px){ .corner{ width:34px; height:34px; } }
 
 /* ============================================================
-   VIDEO BUNGA (pojok atas, transparan, loop)
+   BUNGA ANIMASI 4 POJOK (transparan, loop) — tampil di SEMUA halaman
+   termasuk cover, karena z-index-nya di atas #cover.
+   WebM (VP8/VP9) DAN WebP animasi sama-sama mendukung alpha channel
+   asli, jadi tidak perlu trik mix-blend-mode seperti pada MP4.
+   Catatan: transparansi WebM di Safari/iPhone tidak selalu konsisten —
+   jika banyak tamu memakai iPhone, WebP lebih aman.
+
+   Ukuran diatur lewat variabel --flower-*-size di :root (lihat atas).
+   Kalau file video untuk satu pojok belum diupload / gagal dimuat,
+   pojok tersebut otomatis disembunyikan (lihat script "flowerCorners").
+
+   PENTING soal ukuran & tulisan: elemen ini hanya menempel di
+   sudut layar (pojok), bukan di tengah, jadi selama motif bunga pada
+   video kamu terkonsentrasi di ujung sudut (dan makin transparan ke
+   arah tengah), sebesar apapun kotaknya tidak akan menutupi teks.
    ============================================================ */
-#flower-video-wrap{
-  position: fixed; top: -18px; right: -18px; z-index: 6;
-  width: 260px; max-width: 46vw; pointer-events: none;
+.flower-corner{
+  position: fixed; z-index: 55; pointer-events: none;
+  max-width: 48vw;
 }
-#flower-video{
-  width: 100%; height: auto; display: block;
-  /* Video mp4 tidak mendukung alpha channel asli di browser.
-     mix-blend-mode 'screen' membuat area HITAM pada video menjadi transparan
-     terhadap latar terang di belakangnya, sehingga hanya bunganya yang tampak.
-     Jika latar video kamu justru PUTIH (bukan hitam), ganti 'screen' menjadi 'multiply'. */
-  mix-blend-mode: screen;
+.flower-corner video, .flower-corner img{ width:100%; height:auto; display:block; }
+.flower-corner.hidden{ display:none; }
+
+#corner-tr{ top: -18px; right: -18px; width: var(--flower-tr-size); }
+#corner-br{ bottom: -18px; right: -18px; width: var(--flower-br-size); }
+#corner-tl{ top: -18px; left: -18px; width: var(--flower-tl-size); }
+#corner-bl{ bottom: -18px; left: -18px; width: var(--flower-bl-size); }
+
+/* ============================================================
+   BUNGA BERJEJER DI COVER (atas & bawah) — coveratas.webm / coverbawah.webm
+   Ukuran (tinggi) diatur lewat --cover-top-size & --cover-bottom-size.
+   #cover-content otomatis diberi jarak (padding) mengikuti variabel
+   yang sama, jadi berapapun besar kamu set videonya, teks & tombol
+   di cover TIDAK akan pernah ketutupan.
+   ============================================================ */
+.cover-flower-band{
+  position:absolute; left:0; width:100%; z-index: 5;
+  pointer-events:none; overflow:hidden;
 }
-@media(max-width:640px){
-  #flower-video-wrap{ width: 170px; top:-10px; right:-10px; }
-}
+.cover-flower-band video{ width:100%; height:100%; object-fit:cover; display:block; }
+.cover-flower-band.hidden{ display:none; }
+#cover-flower-top{ top:0; height: var(--cover-top-size); }
+#cover-flower-bottom{ bottom:0; height: var(--cover-bottom-size); }
 
 /* ============================================================
    COVER / ENVELOPE
@@ -168,7 +221,9 @@ button{ font-family: inherit; }
 #cover-content{
   position:relative; z-index:2; height:100%; width:100%;
   display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-  padding: clamp(96px, 28vh, 210px) 20px 32px;
+  padding-top: max(clamp(96px, 28vh, 210px), calc(var(--cover-top-size) + 24px));
+  padding-bottom: calc(var(--cover-bottom-size) + 28px);
+  padding-left: 20px; padding-right: 20px;
   text-align:center;
   overflow-y:auto;
 }
@@ -395,9 +450,24 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 </head>
 <body class="locked">
 
-<div id="flower-video-wrap">
-  <video id="flower-video" autoplay muted loop playsinline aria-hidden="true">
-    <source src="bunga1.mp4" type="video/mp4">
+<div class="flower-corner" id="corner-tr">
+  <video autoplay muted loop playsinline aria-hidden="true">
+    <source src="pojokkananatas.webm" type="video/webm">
+  </video>
+</div>
+<div class="flower-corner" id="corner-br">
+  <video autoplay muted loop playsinline aria-hidden="true">
+    <source src="pojokkananbawah.webm" type="video/webm">
+  </video>
+</div>
+<div class="flower-corner" id="corner-tl">
+  <video autoplay muted loop playsinline aria-hidden="true">
+    <source src="pojokkiriatas.webm" type="video/webm">
+  </video>
+</div>
+<div class="flower-corner" id="corner-bl">
+  <video autoplay muted loop playsinline aria-hidden="true">
+    <source src="pojokkiribawah.webm" type="video/webm">
   </video>
 </div>
 
@@ -411,6 +481,17 @@ footer{ text-align:center; padding: 26px 20px 46px; color: var(--ink-soft); font
 
 <!-- ============ COVER / ENVELOPE ============ -->
 <div id="cover">
+  <div class="cover-flower-band" id="cover-flower-top">
+    <video autoplay muted loop playsinline aria-hidden="true">
+      <source src="coveratas.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="cover-flower-band" id="cover-flower-bottom">
+    <video autoplay muted loop playsinline aria-hidden="true">
+      <source src="coverbawah.webm" type="video/webm">
+    </video>
+  </div>
+
   <div class="envelope-flap"><span>Undangan Pernikahan</span></div>
   <div class="seal">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3c-2 3-5 4-5 7a5 5 0 0 0 10 0c0-3-3-4-5-7Z"/><path d="M12 13v8M8 21h8"/></svg>
@@ -647,6 +728,18 @@ const DATA_UNDANGAN = {
   document.documentElement.classList.remove('no-js');
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Bunga (pojok & band cover): sembunyikan otomatis jika file belum ada ---------- */
+  (function flowerMedia(){
+    document.querySelectorAll('.flower-corner video, .cover-flower-band video').forEach(function(video){
+      var wrap = video.closest('.flower-corner') || video.closest('.cover-flower-band');
+      video.addEventListener('error', function(){ wrap.classList.add('hidden'); }, true);
+      var src = video.querySelector('source');
+      if(src){
+        src.addEventListener('error', function(){ wrap.classList.add('hidden'); });
+      }
+    });
+  })();
 
   /* ---------- Isi data ke DOM dari DATA_UNDANGAN ---------- */
   function fillData(){
