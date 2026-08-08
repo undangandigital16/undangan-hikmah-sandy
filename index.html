@@ -148,16 +148,17 @@
         .envelope {
             position: relative;
             width: 100%;
-            background: linear-gradient(160deg, rgba(18,18,18,0.92) 0%, rgba(10,10,10,0.95) 100%);
+            background: rgba(8, 8, 8, 0.42);
             border-radius: 16px;
-            border: 1.5px solid rgba(212, 175, 55, 0.45);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
             box-shadow: 
-                0 20px 50px -10px rgba(0,0,0,0.6),
-                0 0 0 1px rgba(212, 175, 55, 0.15),
-                inset 0 1px 0 rgba(255,255,255,0.04);
+                0 20px 50px -10px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(212, 175, 55, 0.12),
+                inset 0 1px 0 rgba(255,255,255,0.06);
             overflow: hidden;
             transform-style: preserve-3d;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
         
         /* Envelope flap - small fixed height, only decorative top triangle */
@@ -167,12 +168,12 @@
             left: 0;
             width: 100%;
             height: 36px;
-            background: linear-gradient(180deg, #222222 0%, #1a1a1a 100%);
+            background: rgba(20, 20, 20, 0.5);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             z-index: 5;
             transform-origin: top center;
             transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.5s ease;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
             border-top: 2px solid var(--gold);
             pointer-events: none;
         }
@@ -200,7 +201,8 @@
             text-transform: uppercase;
             color: var(--gold);
             margin-bottom: 0.85rem;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.7);
         }
         
         .cover-photo {
@@ -239,7 +241,9 @@
             color: var(--gold);
             line-height: 1.15;
             margin-bottom: 0.2rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+            text-shadow: 
+                0 2px 12px rgba(0,0,0,0.8),
+                0 0 20px rgba(0,0,0,0.4);
         }
         
         .cover-ampersand {
@@ -254,14 +258,16 @@
             font-family: 'Playfair Display', serif;
             font-size: 0.78rem;
             letter-spacing: 0.18em;
-            color: var(--text-muted);
+            color: #e0e0e0;
             margin: 0.5rem 0 1rem;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.7);
         }
         
         .guest-box {
-            background: rgba(20,20,20,0.7);
+            background: rgba(0,0,0,0.35);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(212,175,55,0.4);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(212,175,55,0.45);
             border-radius: 12px;
             padding: 0.65rem 1.15rem;
             margin-bottom: 1.15rem;
